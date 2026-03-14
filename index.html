@@ -861,7 +861,21 @@
 
         try {
           const params = new URLSearchParams({ ...data, submittedAt: new Date().toLocaleString('zh-TW') });
-          await fetch(`${SCRIPT_URL}?${params}`, { mode: 'no-cors' });
+          const res  = await fetch(`${SCRIPT_URL}?${params}`);
+          const json = await res.json();
+
+          if (!json.success) {
+            if (json.error === 'alreadyBooked') {
+              // 重新拉取最新已預約時段並標示
+              buildTimeOptions(data.date);
+              await markBookedSlots(data.date);
+              showResult('error', '⚠️', '此時段剛剛已被預約，請重新選擇時段');
+            } else {
+              showResult('error', '❌', '送出失敗，請重試或直接加 LINE 預約');
+            }
+            return;
+          }
+
           bookingForm.reset();
           timeSelect.innerHTML = '<option value="">請先選擇日期</option>';
           showResult('success', '✅', '預約資訊已收到！<br>我們將於 24 小時內以電話或 LINE 與您確認');

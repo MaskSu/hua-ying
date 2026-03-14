@@ -1,15 +1,5 @@
 // ════════════════════════════════════════════════════
 //  HY花楹美學 — 預約系統 Google Apps Script
-//  使用說明：
-//  1. 開啟 Google Sheets，建立新試算表
-//  2. 點選「擴充功能」→「Apps Script」
-//  3. 將此檔案全部內容貼入編輯器（取代原有內容）
-//  4. 點選「部署」→「新增部署作業」
-//  5. 類型選「網頁應用程式」
-//     執行身分：「我」
-//     誰可以存取：「所有人」
-//  6. 複製部署後的網址
-//  7. 貼回 index.html 的 SCRIPT_URL 變數
 // ════════════════════════════════════════════════════
 
 const SHEET_NAME = '預約紀錄';
@@ -39,6 +29,24 @@ function getOrCreateSheet() {
   return sheet;
 }
 
+// 共用：取得某日已預約（非取消）的時段清單
+function getBookedSlots(sheet, date) {
+  const rows = sheet.getDataRange().getValues();
+  const booked = [];
+  for (let i = 1; i < rows.length; i++) {
+    const rowDate   = rows[i][4];
+    const rowTime   = rows[i][5];
+    const rowStatus = rows[i][7];
+    const dateStr = rowDate instanceof Date
+      ? Utilities.formatDate(rowDate, Session.getScriptTimeZone(), 'yyyy-MM-dd')
+      : String(rowDate);
+    if (dateStr === date && rowStatus !== '已取消') {
+      booked.push(String(rowTime));
+    }
+  }
+  return booked;
+}
+
 function doGet(e) {
   try {
     const p = e.parameter;
@@ -46,21 +54,7 @@ function doGet(e) {
     // ── 查詢某日已預約時段 ──
     if (p.action === 'getSlots') {
       const sheet = getOrCreateSheet();
-      const date = p.date || '';
-      const rows = sheet.getDataRange().getValues();
-      const booked = [];
-      for (let i = 1; i < rows.length; i++) {
-        const rowDate  = rows[i][4]; // 希望日期
-        const rowTime  = rows[i][5]; // 希望時段
-        const rowStatus = rows[i][7]; // 狀態
-        // 支援日期存為字串或 Date 物件
-        const dateStr = rowDate instanceof Date
-          ? Utilities.formatDate(rowDate, Session.getScriptTimeZone(), 'yyyy-MM-dd')
-          : String(rowDate);
-        if (dateStr === date && rowStatus !== '已取消') {
-          booked.push(String(rowTime));
-        }
-      }
+      const booked = getBookedSlots(sheet, p.date || '');
       return ContentService
         .createTextOutput(JSON.stringify({ booked }))
         .setMimeType(ContentService.MimeType.JSON);
@@ -73,8 +67,23 @@ function doGet(e) {
         .setMimeType(ContentService.MimeType.TEXT);
     }
 
-    // ── 寫入新預約 ──
+    // ── 寫入新預約（含伺服器端重複時段防護）──
     const sheet = getOrCreateSheet();
+
+    // 週日彈性預約不做時段衝突檢查
+    if (p.time !== '週日彈性預約') {
+      const booked = getBookedSlots(sheet, p.date || '');
+      if (booked.includes(p.time)) {
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: false,
+            error: 'alreadyBooked',
+            message: '此時段已被預約，請選擇其他時段'
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
     sheet.appendRow([
       p.submittedAt || new Date().toLocaleString('zh-TW'),
       p.name    || '',
