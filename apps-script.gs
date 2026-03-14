@@ -31,17 +31,23 @@ function getOrCreateSheet() {
 
 // 共用：取得某日已預約（非取消）的時段清單
 function getBookedSlots(sheet, date) {
+  const tz = Session.getScriptTimeZone();
   const rows = sheet.getDataRange().getValues();
   const booked = [];
   for (let i = 1; i < rows.length; i++) {
     const rowDate   = rows[i][4];
     const rowTime   = rows[i][5];
     const rowStatus = rows[i][7];
+    // Sheets 可能把日期字串自動轉成 Date 物件
     const dateStr = rowDate instanceof Date
-      ? Utilities.formatDate(rowDate, Session.getScriptTimeZone(), 'yyyy-MM-dd')
+      ? Utilities.formatDate(rowDate, tz, 'yyyy-MM-dd')
       : String(rowDate);
+    // Sheets 也可能把 "18:00" 自動轉成 Date 物件（1899-12-30 18:00:00）
+    const timeStr = rowTime instanceof Date
+      ? Utilities.formatDate(rowTime, tz, 'HH:mm')
+      : String(rowTime);
     if (dateStr === date && rowStatus !== '已取消') {
-      booked.push(String(rowTime));
+      booked.push(timeStr);
     }
   }
   return booked;
