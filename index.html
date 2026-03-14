@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HY花楹美學 ─ 一對一預約制</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:       #B8892A;
+      --gold-light: #D4AA5A;
+      --gold-pale:  #F5EDD8;
+      --cream:      #FAF6EF;
+      --brown:      #6B4226;
+      --dark:       #3A2A1A;
+      --white:      #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(250, 246, 239, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(184,137,42,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+    .nav-name {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.88rem;
+      color: var(--brown);
+      font-weight: 500;
+      letter-spacing: 1px;
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #fdf8f0 0%, #f7ede0 50%, #f0e3d0 100%);
+      padding-top: 70px;
+    }
+    .hero-bg-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 15% 30%, rgba(184,137,42,0.06) 0%, transparent 60%),
+        radial-gradient(circle at 85% 70%, rgba(184,137,42,0.08) 0%, transparent 60%);
+    }
+    .hero-deco {
+      position: absolute;
+      top: 8%;
+      right: 5%;
+      width: 280px;
+      opacity: 0.07;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 20px;
+      max-width: 700px;
+    }
+    .hero-logo {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 4px 16px rgba(184,137,42,0.25));
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+    .hero-subtitle-top {
+      font-size: 0.85rem;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .hero-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2.6rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 6px;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .hero-divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 0 auto 18px;
+    }
+    .hero-tagline {
+      font-size: 1rem;
+      color: var(--brown);
+      letter-spacing: 4px;
+      margin-bottom: 36px;
+      opacity: 0.85;
+    }
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .badge {
+      background: rgba(184,137,42,0.1);
+      border: 1px solid rgba(184,137,42,0.3);
+      color: var(--brown);
+      font-size: 0.82rem;
+      padding: 6px 16px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--white);
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 3px;
+      padding: 14px 38px;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 6px 24px rgba(184,137,42,0.35);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(184,137,42,0.45);
+    }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 90px 20px; }
+    .section-label {
+      text-align: center;
+      font-size: 0.78rem;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      text-align: center;
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 4px;
+      margin-bottom: 14px;
+    }
+    .section-line {
+      width: 50px;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 0 auto 50px;
+    }
+
+    /* ── SERVICES ── */
+    .services { background: var(--white); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .service-card {
+      background: var(--cream);
+      border: 1px solid rgba(184,137,42,0.15);
+      border-radius: 20px;
+      padding: 36px 24px;
+      text-align: center;
+      transition: transform .3s, box-shadow .3s, background .3s;
+      cursor: default;
+    }
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(184,137,42,0.15);
+      background: var(--white);
+    }
+    .service-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .service-name {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    .service-desc {
+      font-size: 0.82rem;
+      color: #8a7060;
+      line-height: 1.8;
+      letter-spacing: 1px;
+    }
+
+    /* ── ABOUT / FEATURE ── */
+    .features {
+      background: linear-gradient(135deg, #fdf6ed 0%, #f5e8d5 100%);
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .feature-item {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .feature-num {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: rgba(184,137,42,0.18);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .feature-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .feature-text {
+      font-size: 0.83rem;
+      color: #8a7060;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── GALLERY / PROMO ── */
+    .gallery { background: var(--white); }
+    .gallery-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .gallery-img {
+      width: 100%;
+      border-radius: 18px;
+      object-fit: cover;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      transition: transform .3s;
+    }
+    .gallery-img:hover { transform: scale(1.02); }
+    .gallery-img.tall { grid-row: span 1; height: 420px; }
+
+    /* ── HOURS ── */
+    .hours { background: linear-gradient(135deg, #fdf6ed 0%, #f5e8d5 100%); }
+    .hours-card {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 24px;
+      padding: 48px 40px;
+      box-shadow: 0 12px 50px rgba(184,137,42,0.12);
+      border: 1px solid rgba(184,137,42,0.2);
+    }
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(184,137,42,0.1);
+      font-size: 0.92rem;
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-day { color: var(--brown); font-weight: 500; letter-spacing: 1px; }
+    .hours-time { color: var(--gold); font-weight: 600; letter-spacing: 1px; }
+    .hours-note {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: #a08060;
+      letter-spacing: 1px;
+      line-height: 1.8;
+    }
+
+    /* ── CTA / CONTACT ── */
+    .cta {
+      background: linear-gradient(135deg, var(--brown) 0%, #4a2e18 100%);
+      text-align: center;
+      padding: 90px 20px;
+    }
+    .cta .section-label { color: var(--gold-light); }
+    .cta .section-title { color: var(--white); }
+    .cta .section-line { background: linear-gradient(to right, transparent, var(--gold-light), transparent); }
+    .cta-text {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.92rem;
+      letter-spacing: 2px;
+      margin-bottom: 36px;
+    }
+    .line-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #06C755;
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      padding: 16px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 6px 24px rgba(6,199,85,0.35);
+      transition: transform .25s, box-shadow .25s;
+      margin-bottom: 16px;
+    }
+    .line-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(6,199,85,0.45);
+    }
+    .line-id {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 2px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+    }
+    footer strong { color: var(--gold-light); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      nav { padding: 10px 18px; }
+      .nav-links { display: none; }
+      .gallery-wrap { grid-template-columns: 1fr; }
+      .gallery-img.tall { height: 280px; }
+      .hours-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-brand" href="#hero">
+      <svg class="nav-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#fdf6ed" stroke="#D4AA5A" stroke-width="1"/>
+          <g transform="translate(50,50)">
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(0)   translate(0,-16)"/>
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(45)  translate(0,-16)"/>
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(90)  translate(0,-16)"/>
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(135) translate(0,-16)"/>
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(180) translate(0,-16)"/>
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(225) translate(0,-16)"/>
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(270) translate(0,-16)"/>
+            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(315) translate(0,-16)"/>
+            <circle r="8" fill="none" stroke="#B8892A" stroke-width="1.5"/>
+            <circle r="3.5" fill="#B8892A"/>
+          </g>
+        </svg>
+      <span class="nav-name">HY花楹美學</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">服務項目</a></li>
+      <li><a href="#gallery">作品展示</a></li>
+      <li><a href="#hours">營業時間</a></li>
+      <li><a href="#contact">立即預約</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-inner">
+      <!-- Logo SVG 重繪 -->
+      <div style="width:130px;height:130px;margin:0 auto 20px;animation:float 4s ease-in-out infinite;filter:drop-shadow(0 6px 20px rgba(184,137,42,0.35));">
+        <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130">
+          <circle cx="65" cy="65" r="62" fill="#fdf6ed" stroke="#D4AA5A" stroke-width="1.5"/>
+          <!-- 8片花瓣 -->
+          <g transform="translate(65,65)">
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(0)   translate(0,-22)"/>
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(45)  translate(0,-22)"/>
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(90)  translate(0,-22)"/>
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(135) translate(0,-22)"/>
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(180) translate(0,-22)"/>
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(225) translate(0,-22)"/>
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(270) translate(0,-22)"/>
+            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(315) translate(0,-22)"/>
+            <!-- 中心圓 -->
+            <circle r="12" fill="none" stroke="#B8892A" stroke-width="2"/>
+            <circle r="5"  fill="#B8892A"/>
+          </g>
+        </svg>
+      </div>
+
+      <p class="hero-subtitle-top">Beauty &amp; Aesthetics</p>
+      <h1 class="hero-title">HY花楹美學</h1>
+      <div class="hero-divider"></div>
+      <p class="hero-tagline">【 肌　日　常 】　一 對 一 預 約 制</p>
+      <div class="hero-badges">
+        <span class="badge">半永久自然感紋繡</span>
+        <span class="badge">韓式皮膚管理</span>
+        <span class="badge">艾草溫罐調理</span>
+        <span class="badge">臉部・身體美容</span>
+        <span class="badge">整體造型</span>
+      </div>
+      <a href="#contact" class="btn-primary">立 即 預 約</a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <p class="section-label reveal">Our Services</p>
+    <h2 class="section-title reveal">服 務 項 目</h2>
+    <div class="section-line reveal"></div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <span class="service-icon">✍️</span>
+        <h3 class="service-name">半永久自然感紋繡</h3>
+        <p class="service-desc">專業手法打造最自然的眉型、唇色，以您的五官為本，設計專屬輪廓</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-icon">🌿</span>
+        <h3 class="service-name">韓式皮膚管理</h3>
+        <p class="service-desc">引進韓系精華護理，深層清潔、補水修護，讓肌膚重現光澤彈性</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-icon">🫙</span>
+        <h3 class="service-name">艾草溫罐調理</h3>
+        <p class="service-desc">結合傳統艾草與溫熱療法，促進循環、疏通經絡，由內而外調養體質</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-icon">💆</span>
+        <h3 class="service-name">臉部・身體美容</h3>
+        <p class="service-desc">客製化臉部護理與全身放鬆療程，全方位呵護您的身心狀態</p>
+      </div>
+      <div class="service-card reveal" style="grid-column: span 1;">
+        <span class="service-icon">💄</span>
+        <h3 class="service-name">整體造型</h3>
+        <p class="service-desc">彩妝・髮型・整體搭配，為每個重要場合打造最美的您</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label reveal">Why Choose Us</p>
+    <h2 class="section-title reveal">我 們 的 堅 持</h2>
+    <div class="section-line reveal"></div>
+    <div class="features-grid">
+      <div class="feature-item reveal">
+        <div class="feature-num">01</div>
+        <h3 class="feature-title">一對一專屬服務</h3>
+        <p class="feature-text">每位顧客皆獨立預約，全程專人陪伴，不受打擾地享受屬於您的美容時光</p>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-num">02</div>
+        <h3 class="feature-title">客製化設計</h3>
+        <p class="feature-text">依據您的膚質、臉型與需求，量身規劃最適合的療程與造型方案</p>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-num">03</div>
+        <h3 class="feature-title">嚴選優質材料</h3>
+        <p class="feature-text">精選有保障的品牌耗材，安全、衛生，讓您放心享受每一次的服務</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="gallery">
+    <p class="section-label reveal">Gallery</p>
+    <h2 class="section-title reveal">作 品 展 示</h2>
+    <div class="section-line reveal"></div>
+    <div class="gallery-wrap">
+      <img class="gallery-img tall reveal" src="S__136757253.jpg" alt="HY花楹美學服務介紹" style="height:420px;object-fit:cover;object-position:center top;" />
+      <img class="gallery-img tall reveal" src="S__136765445.jpg" alt="HY花楹美學品牌" style="height:420px;object-fit:cover;object-position:center 20%;" />
+    </div>
+  </section>
+
+  <!-- HOURS -->
+  <section class="hours" id="hours">
+    <p class="section-label reveal">Opening Hours</p>
+    <h2 class="section-title reveal">營 業 時 間</h2>
+    <div class="section-line reveal"></div>
+    <div class="hours-card reveal">
+      <div class="hours-row">
+        <span class="hours-day">📍 採預約制</span>
+        <span class="hours-time" style="font-size:0.8rem;color:#a08060;">By Appointment</span>
+      </div>
+      <div class="hours-row">
+        <span class="hours-day">平　日</span>
+        <span class="hours-time">18:00 – 22:00</span>
+      </div>
+      <div class="hours-row">
+        <span class="hours-day">週　六</span>
+        <span class="hours-time">09:30 – 21:30</span>
+      </div>
+      <div class="hours-row">
+        <span class="hours-day">週　日</span>
+        <span class="hours-time" style="color:#c8a030;">彈性預約</span>
+      </div>
+      <p class="hours-note">
+        依預約時段安排<br/>其他時段可私訊詢問
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA / CONTACT -->
+  <section class="cta" id="contact">
+    <p class="section-label reveal">Book Now</p>
+    <h2 class="section-title reveal">立 即 預 約</h2>
+    <div class="section-line reveal"></div>
+    <p class="cta-text reveal">加入官方 LINE，與我們預約您的專屬時光</p>
+    <div class="reveal">
+      <a href="https://line.me/R/ti/p/@huaping1118" class="line-btn" target="_blank">
+        <svg width="22" height="22" viewBox="0 0 50 50" fill="white"><path d="M25 3C12.85 3 3 11.46 3 21.9c0 6.1 3.44 11.52 8.75 15.03L9.5 44.6c-.16.6.4 1.1.97.82l8.5-4.58c1.96.47 4.01.72 6.03.72 12.15 0 22-8.46 22-18.66C47 11.46 37.15 3 25 3z"/></svg>
+        加入 LINE 預約
+      </a>
+      <p class="line-id">@huaping1118</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2024 <strong>HY花楹美學</strong>　一對一預約制　肌日常</p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
