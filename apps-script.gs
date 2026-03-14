@@ -39,15 +39,41 @@ function getOrCreateSheet() {
   return sheet;
 }
 
-// 接收前端 GET 請求（使用 URL query parameters，避免 CORS 問題）
 function doGet(e) {
   try {
     const p = e.parameter;
-    // 健康檢查：沒有 name 參數時回傳 ok
+
+    // ── 查詢某日已預約時段 ──
+    if (p.action === 'getSlots') {
+      const sheet = getOrCreateSheet();
+      const date = p.date || '';
+      const rows = sheet.getDataRange().getValues();
+      const booked = [];
+      for (let i = 1; i < rows.length; i++) {
+        const rowDate  = rows[i][4]; // 希望日期
+        const rowTime  = rows[i][5]; // 希望時段
+        const rowStatus = rows[i][7]; // 狀態
+        // 支援日期存為字串或 Date 物件
+        const dateStr = rowDate instanceof Date
+          ? Utilities.formatDate(rowDate, Session.getScriptTimeZone(), 'yyyy-MM-dd')
+          : String(rowDate);
+        if (dateStr === date && rowStatus !== '已取消') {
+          booked.push(String(rowTime));
+        }
+      }
+      return ContentService
+        .createTextOutput(JSON.stringify({ booked }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // ── 健康檢查 ──
     if (!p.name) {
-      return ContentService.createTextOutput('HY花楹美學預約系統運作中 ✓')
+      return ContentService
+        .createTextOutput('HY花楹美學預約系統運作中 ✓')
         .setMimeType(ContentService.MimeType.TEXT);
     }
+
+    // ── 寫入新預約 ──
     const sheet = getOrCreateSheet();
     sheet.appendRow([
       p.submittedAt || new Date().toLocaleString('zh-TW'),
@@ -63,10 +89,13 @@ function doGet(e) {
     const rule = SpreadsheetApp.newDataValidation()
       .requireValueInList(['待確認', '已確認', '已完成', '已取消']).build();
     sheet.getRange(lastRow, 8).setDataValidation(rule);
-    return ContentService.createTextOutput(JSON.stringify({ success: true, message: '預約成功' }))
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true, message: '預約成功' }))
       .setMimeType(ContentService.MimeType.JSON);
+
   } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }

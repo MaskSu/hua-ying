@@ -810,7 +810,29 @@
       });
     }
 
-    if (dateInput) dateInput.addEventListener('change', e => buildTimeOptions(e.target.value));
+    if (dateInput) dateInput.addEventListener('change', async (e) => {
+      buildTimeOptions(e.target.value);
+      await markBookedSlots(e.target.value);
+    });
+
+    async function markBookedSlots(dateStr) {
+      if (!dateStr || SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL') return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getSlots&date=${dateStr}`);
+        const json = await res.json();
+        const booked = json.booked || [];
+        if (booked.length === 0) return;
+        Array.from(timeSelect.options).forEach(opt => {
+          if (booked.includes(opt.value)) {
+            opt.disabled = true;
+            opt.textContent = opt.value + '　（已預約）';
+            opt.style.color = '#bbb';
+          }
+        });
+      } catch (_) {
+        // 查詢失敗不影響預約流程
+      }
+    }
 
     // ── 表單送出 ──
     const bookingForm = document.getElementById('bookingForm');
