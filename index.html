@@ -838,12 +838,8 @@
         submitBtn.textContent = '送出中…';
 
         try {
-          await fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...data, submittedAt: new Date().toLocaleString('zh-TW') })
-          });
+          const params = new URLSearchParams({ ...data, submittedAt: new Date().toLocaleString('zh-TW') });
+          await fetch(`${SCRIPT_URL}?${params}`, { mode: 'no-cors' });
           bookingForm.reset();
           timeSelect.innerHTML = '<option value="">請先選擇日期</option>';
           showResult('success', '✅', '預約資訊已收到！<br>我們將於 24 小時內以電話或 LINE 與您確認');
