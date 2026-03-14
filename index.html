@@ -288,21 +288,29 @@
     /* ── GALLERY / PROMO ── */
     .gallery { background: var(--white); }
     .gallery-wrap {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      columns: 3;
+      column-gap: 16px;
+    }
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 16px;
     }
     .gallery-img {
       width: 100%;
-      border-radius: 18px;
+      border-radius: 14px;
       object-fit: cover;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-      transition: transform .3s;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      transition: transform .3s, box-shadow .3s;
+      display: block;
     }
-    .gallery-img:hover { transform: scale(1.02); }
-    .gallery-img.tall { grid-row: span 1; height: 420px; }
+    .gallery-img:hover {
+      transform: scale(1.025);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+    }
+    @media (max-width: 768px) { .gallery-wrap { columns: 2; } }
+    @media (max-width: 480px) { .gallery-wrap { columns: 1; } }
 
     /* ── HOURS ── */
     .hours { background: linear-gradient(135deg, #fdf6ed 0%, #f5e8d5 100%); }
@@ -503,9 +511,7 @@
     @media (max-width: 640px) {
       nav { padding: 10px 18px; }
       .nav-links { display: none; }
-      .gallery-wrap { grid-template-columns: 1fr; }
-      .gallery-img.tall { height: 280px; }
-      .hours-card { padding: 32px 24px; }
+.hours-card { padding: 32px 24px; }
       .booking-form { padding: 28px 20px; }
       .form-row { grid-template-columns: 1fr; gap: 14px; }
     }
@@ -516,21 +522,7 @@
   <!-- NAV -->
   <nav>
     <a class="nav-brand" href="#hero">
-      <svg class="nav-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="48" fill="#fdf6ed" stroke="#D4AA5A" stroke-width="1"/>
-          <g transform="translate(50,50)">
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(0)   translate(0,-16)"/>
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(45)  translate(0,-16)"/>
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(90)  translate(0,-16)"/>
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(135) translate(0,-16)"/>
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(180) translate(0,-16)"/>
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(225) translate(0,-16)"/>
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(270) translate(0,-16)"/>
-            <ellipse rx="7" ry="20" fill="none" stroke="#B8892A" stroke-width="1.5" transform="rotate(315) translate(0,-16)"/>
-            <circle r="8" fill="none" stroke="#B8892A" stroke-width="1.5"/>
-            <circle r="3.5" fill="#B8892A"/>
-          </g>
-        </svg>
+      <img class="nav-logo" src="logo.svg" alt="HY花楹美學 Logo" />
       <span class="nav-name">HY花楹美學</span>
     </a>
     <ul class="nav-links">
@@ -546,26 +538,8 @@
   <section class="hero" id="hero">
     <div class="hero-bg-pattern"></div>
     <div class="hero-inner">
-      <!-- Logo SVG 重繪 -->
-      <div style="width:130px;height:130px;margin:0 auto 20px;animation:float 4s ease-in-out infinite;filter:drop-shadow(0 6px 20px rgba(184,137,42,0.35));">
-        <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130">
-          <circle cx="65" cy="65" r="62" fill="#fdf6ed" stroke="#D4AA5A" stroke-width="1.5"/>
-          <!-- 8片花瓣 -->
-          <g transform="translate(65,65)">
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(0)   translate(0,-22)"/>
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(45)  translate(0,-22)"/>
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(90)  translate(0,-22)"/>
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(135) translate(0,-22)"/>
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(180) translate(0,-22)"/>
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(225) translate(0,-22)"/>
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(270) translate(0,-22)"/>
-            <ellipse rx="10" ry="28" fill="none" stroke="#B8892A" stroke-width="2" transform="rotate(315) translate(0,-22)"/>
-            <!-- 中心圓 -->
-            <circle r="12" fill="none" stroke="#B8892A" stroke-width="2"/>
-            <circle r="5"  fill="#B8892A"/>
-          </g>
-        </svg>
-      </div>
+      <img src="logo.svg" alt="HY花楹美學 Logo"
+           style="width:130px;height:130px;object-fit:contain;margin:0 auto 20px;display:block;animation:float 4s ease-in-out infinite;filter:drop-shadow(0 6px 20px rgba(184,137,42,0.35));" />
 
       <p class="hero-subtitle-top">Beauty &amp; Aesthetics</p>
       <h1 class="hero-title">HY花楹美學</h1>
@@ -646,8 +620,15 @@
     <h2 class="section-title reveal">作 品 展 示</h2>
     <div class="section-line reveal"></div>
     <div class="gallery-wrap">
-      <img class="gallery-img tall reveal" src="S__136757253.jpg" alt="HY花楹美學服務介紹" style="height:420px;object-fit:cover;object-position:center top;" />
-      <img class="gallery-img tall reveal" src="S__136765445.jpg" alt="HY花楹美學品牌" style="height:420px;object-fit:cover;object-position:center 20%;" />
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/75833CD2-D60A-41C7-8F89-7B03A90A041E.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/A71DDCBD-BC25-4FE4-9D6D-A32DEDFE4CEF.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/B035BA9F-7D00-4CF5-91E0-D39F5C6F3B10.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/DCE287CA-BBBE-41DF-A57F-C8FD969EF549.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/E557CE76-F938-4F4C-AF32-2929F2CE70F0.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/EAFDBA86-FB61-4B26-BC0D-A5F5CEDD8E94.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/S__136781849.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/S__136781853.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
+      <div class="gallery-item reveal"><img class="gallery-img" src="portfolio/S__136790021.jpg" alt="HY花楹美學作品" loading="lazy" /></div>
     </div>
   </section>
 
